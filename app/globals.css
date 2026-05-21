@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-elio-bg: #FAF9F6;
+  --color-elio-surface: #F0EDEA;
+  --color-elio-primary: #7B9E9A;
+  --color-elio-primary-dark: #5C8480;
+  --color-elio-text: #1A1A1A;
+  --color-elio-muted: #6B6B6B;
+  --color-elio-border: #E5E2DF;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--color-elio-bg);
+  color: var(--color-elio-text);
+  -webkit-font-smoothing: antialiased;
+}
