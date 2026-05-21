@@ -1,6 +1,26 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import ChatInterface from '@/components/chat/ChatInterface'
 
 export default function Home() {
+  const router = useRouter()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    if (!localStorage.getItem('elio_onboarded')) {
+      router.replace('/onboarding')
+    } else {
+      setReady(true)
+    }
+  }, [router])
+
+  if (!ready) {
+    return (
+      <div style={{ position: 'fixed', inset: 0, backgroundColor: '#1A1A1A' }} />
+    )
+  }
+
   return (
     <main className="flex flex-col h-screen" style={{ backgroundColor: '#FAF9F6' }}>
       <div className="flex-none w-full" style={{ borderBottom: '1px solid #E5E2DF' }}>
