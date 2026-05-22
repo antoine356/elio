@@ -170,7 +170,7 @@ export default function ChatInterface() {
 
   return (
     <div className={`flex flex-col h-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
-      <div className="flex-1 overflow-y-auto px-5 pt-6 pb-2">
+      <div className="flex-1 overflow-y-auto px-5 pt-6 pb-2" style={{ backgroundColor: '#F5F2EF' }}>
         {messages.map((msg, i) => (
           <MessageBubble key={i} role={msg.role} content={msg.content} />
         ))}

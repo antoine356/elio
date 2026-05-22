@@ -34,8 +34,16 @@ export default function InputBar({ onSend, disabled }: InputBarProps) {
   }
 
   return (
-    <div style={{ borderTop: '1px solid #E5E2DF', backgroundColor: '#FAF9F6' }} className="px-4 py-3">
-      <div style={{ backgroundColor: '#F0EDEA' }} className="flex items-end gap-2 rounded-2xl px-4 py-2">
+    <div style={{ borderTop: '1px solid #E5E2DF', backgroundColor: '#F5F2EF' }} className="px-4 py-3">
+      <div style={{
+        background: '#FFFFFF',
+        border: '0.5px solid #E5E2DF',
+        borderRadius: '9999px',
+        padding: '6px 8px 6px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}>
         <textarea
           ref={textareaRef}
           value={value}
@@ -51,8 +59,20 @@ export default function InputBar({ onSend, disabled }: InputBarProps) {
         <button
           onClick={handleSend}
           disabled={disabled || !value.trim()}
-          style={{ backgroundColor: '#7B9E9A' }}
-          className="mb-1 w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30 transition-opacity flex-shrink-0"
+          style={{
+            background: '#7B9E9A',
+            border: 'none',
+            borderRadius: '9999px',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
+            opacity: (disabled || !value.trim()) ? 0.3 : 1,
+            transition: 'opacity 0.15s ease',
+          }}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M7 12V2M7 2L2 7M7 2L12 7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-elio-bg: #FAF9F6;
+  --color-elio-bg: #F5F2EF;
   --color-elio-surface: #F0EDEA;
   --color-elio-primary: #7B9E9A;
   --color-elio-primary-dark: #5C8480;
