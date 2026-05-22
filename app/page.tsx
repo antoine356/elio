@@ -22,17 +22,28 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-col h-[100dvh]" style={{ backgroundColor: '#F5F2EF' }}>
-      <div className="flex-none w-full" style={{ borderBottom: '1px solid #E5E2DF' }}>
-        <div className="mx-auto w-full max-w-2xl px-5 py-4">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#7B9E9A' }} />
-            <span className="text-sm font-medium tracking-wide" style={{ color: '#6B6B6B' }}>Elio</span>
+    <main style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100dvh',
+      maxHeight: '-webkit-fill-available',
+      backgroundColor: '#F5F2EF',
+      overflow: 'hidden',
+    }}>
+      <div style={{ borderBottom: '1px solid #E5E2DF', flexShrink: 0 }}>
+        <div style={{ margin: '0 auto', width: '100%', maxWidth: '672px', padding: '16px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{
+              width: '8px', height: '8px', borderRadius: '50%',
+              backgroundColor: '#7B9E9A',
+              animation: 'pulse 2s infinite',
+            }} />
+            <span style={{ fontSize: '14px', fontWeight: '500', letterSpacing: '0.025em', color: '#6B6B6B' }}>Elio</span>
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-hidden">
-        <div className="mx-auto w-full max-w-2xl h-full">
+      <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+        <div style={{ margin: '0 auto', width: '100%', maxWidth: '672px', height: '100%' }}>
           <ChatInterface />
         </div>
       </div>
