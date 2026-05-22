@@ -13,6 +13,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
       <div
         style={{
           maxWidth: '75%',
+          marginLeft: isAssistant ? '0.75rem' : undefined,
           padding: '10px 14px',
           fontSize: '15px',
           lineHeight: '1.6',

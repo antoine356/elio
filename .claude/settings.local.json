@@ -9,7 +9,13 @@
       "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\AntoineFonfreydelLib\\\\OneDrive - LITG\\\\Documents\\\\Projets\\\\elio\\\\app\\\\fonts\")",
       "Bash(Write-Output \"Dossiers créés\")",
       "PowerShell(New-Item *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(node scripts/generate-icons.mjs)",
+      "Bash(npm run *)",
+      "Bash(npx vercel *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
