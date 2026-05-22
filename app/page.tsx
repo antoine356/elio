@@ -22,7 +22,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-col h-screen" style={{ backgroundColor: '#F5F2EF' }}>
+    <main className="flex flex-col h-[100dvh]" style={{ backgroundColor: '#F5F2EF' }}>
       <div className="flex-none w-full" style={{ borderBottom: '1px solid #E5E2DF' }}>
         <div className="mx-auto w-full max-w-2xl px-5 py-4">
           <div className="flex items-center gap-2">
