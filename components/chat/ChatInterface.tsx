@@ -10,14 +10,13 @@ interface Message {
   content: string
 }
 
-const SUGGESTIONS = [
+const SUGGESTIONS_FALLBACK = [
   'Recommande-moi un livre',
   'Idée de repas ce soir',
   'Quoi faire ce week-end',
-  'Météo aujourd\'hui',
 ]
 
-function getDateContext(): { dayOfWeek: string; hour: number; season: string } {
+function getDateContext() {
   const now = new Date()
   const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
   const dayOfWeek = days[now.getDay()]
@@ -35,23 +34,21 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [suggestions, setSuggestions] = useState<string[]>(SUGGESTIONS_FALLBACK)
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  // ── Mémoire dynamique ──────────────────────────────────────────────────────
   const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const messagesRef = useRef(messages)
 
-  // Maintenir messagesRef synchronisé avec messages
   useEffect(() => {
     messagesRef.current = messages
   }, [messages])
 
   const triggerMemoryUpdate = useCallback(async () => {
     const currentMessages = messagesRef.current
-    // Ne déclencher que si la conversation a au moins un message utilisateur
     const hasUserMessage = currentMessages.some((m) => m.role === 'user')
     if (!hasUserMessage) return
-
     try {
       await fetch('/api/memory', {
         method: 'POST',
@@ -59,7 +56,6 @@ export default function ChatInterface() {
         body: JSON.stringify({ messages: currentMessages }),
       })
     } catch (error) {
-      // Silencieux : la mémoire est best-effort, pas bloquante
       console.error('Memory update failed silently:', error)
     }
   }, [])
@@ -70,36 +66,60 @@ export default function ChatInterface() {
     }
     inactivityTimerRef.current = setTimeout(() => {
       triggerMemoryUpdate()
-    }, 30 * 60 * 1000) // 30 minutes
+    }, 30 * 60 * 1000)
   }, [triggerMemoryUpdate])
 
-  // Nettoyer le timer au démontage
+  // Sauvegarde mémoire sur mise en arrière-plan (mobile)
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        triggerMemoryUpdate()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current)
       }
     }
-  }, [])
-  // ── Fin mémoire dynamique ──────────────────────────────────────────────────
+  }, [triggerMemoryUpdate])
 
+  // Suggestions dynamiques
+  const fetchSuggestions = useCallback(async () => {
+    setSuggestionsLoading(true)
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ suggestions: true }),
+      })
+      const data = await res.json()
+      if (data.suggestions && data.suggestions.length > 0) {
+        setSuggestions(data.suggestions)
+      }
+    } catch {
+      // Silencieux : le fallback statique reste en place
+    } finally {
+      setSuggestionsLoading(false)
+    }
+  }, [])
+
+  // Message proactif ou de présence à l'ouverture
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
     const lastProactive = localStorage.getItem('elio_last_proactive_date')
 
     if (lastProactive === today) {
-      // Déjà fait aujourd'hui : greeting statique
-      const { hour } = getDateContext()
-      let greeting = 'Bonjour Marie-Pierre.'
-      if (hour >= 12 && hour < 18) greeting = 'Bon après-midi, Marie-Pierre.'
-      else if (hour >= 18) greeting = 'Bonsoir Marie-Pierre.'
-      setMessages([{ role: 'assistant', content: greeting }])
+      // Même jour : présence silencieuse, pas de message automatique
+      // Les suggestions dynamiques donnent la direction
       setShowSuggestions(true)
+      fetchSuggestions()
       setTimeout(() => setIsReady(true), 300)
       return
     }
 
-    // Premier lancement du jour : message proactif généré par l'API
+    // Premier lancement du jour : message proactif
     const fetchProactive = async () => {
       setIsLoading(true)
       try {
@@ -121,20 +141,18 @@ export default function ChatInterface() {
           localStorage.setItem('elio_last_proactive_date', today)
         }
       } catch {
-        const { hour } = getDateContext()
-        let greeting = 'Bonjour Marie-Pierre.'
-        if (hour >= 12 && hour < 18) greeting = 'Bon après-midi, Marie-Pierre.'
-        else if (hour >= 18) greeting = 'Bonsoir Marie-Pierre.'
-        setMessages([{ role: 'assistant', content: greeting }])
+        // Erreur réseau : Elio reste silencieux plutôt que d'afficher un texte générique
+        // Les suggestions guideront Marie-Pierre
       } finally {
         setIsLoading(false)
         setShowSuggestions(true)
+        fetchSuggestions()
         setTimeout(() => setIsReady(true), 300)
       }
     }
 
     fetchProactive()
-  }, [])
+  }, [fetchSuggestions])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -144,7 +162,7 @@ export default function ChatInterface() {
     setShowSuggestions(false)
     const newMessages: Message[] = [...messages, { role: 'user', content }]
     setMessages(newMessages)
-    resetInactivityTimer() // ← réinitialise après ajout du message utilisateur
+    resetInactivityTimer()
     setIsLoading(true)
 
     try {
@@ -153,15 +171,16 @@ export default function ChatInterface() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages }),
       })
+      if (!res.ok) throw new Error('API error')
       const data = await res.json()
       if (data.message) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
-        resetInactivityTimer() // ← réinitialise après ajout de la réponse d'Elio
+        resetInactivityTimer()
       }
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Désolé, une erreur est survenue. Réessaie dans un moment.',
+        content: 'Je n\'arrive pas à te répondre en ce moment. Réessaie dans quelques instants.',
       }])
     } finally {
       setIsLoading(false)
@@ -177,7 +196,8 @@ export default function ChatInterface() {
         {isLoading && <TypingIndicator />}
         {showSuggestions && !isLoading && (
           <SuggestionChips
-            suggestions={SUGGESTIONS}
+            suggestions={suggestions}
+            loading={suggestionsLoading}
             onSelect={(suggestion) => sendMessage(suggestion)}
           />
         )}

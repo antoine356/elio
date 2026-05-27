@@ -1,9 +1,43 @@
 interface SuggestionChipsProps {
   suggestions: string[]
+  loading?: boolean
   onSelect: (suggestion: string) => void
 }
 
-export default function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps) {
+export default function SuggestionChips({ suggestions, loading = false, onSelect }: SuggestionChipsProps) {
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '8px',
+        marginLeft: '2px',
+        marginTop: '4px',
+        marginBottom: '8px',
+      }}>
+        {[90, 120, 100].map((width, i) => (
+          <div
+            key={i}
+            style={{
+              width: `${width}px`,
+              height: '32px',
+              borderRadius: '9999px',
+              backgroundColor: '#EEEBE8',
+              animation: 'pulse 1.5s ease-in-out infinite',
+              animationDelay: `${i * 0.15}s`,
+            }}
+          />
+        ))}
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       display: 'flex',

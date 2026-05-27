@@ -15,7 +15,14 @@
       "Bash(npx vercel *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(vercel --prod)",
+      "Bash(node -e ' *)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\AntoineFonfreydelLib\\\\OneDrive - LITG\\\\Documents\\\\Projets\\\\formation_BeApi\\\\GemAPI\" -Force)",
+      "Bash(ls -la \"/mnt/c/Users/AntoineFonfreydelLib/OneDrive - LITG/Documents/Projets/formation_BeApi/GemAPI\" 2>/dev/null || echo \"DOSSIER VIDE OU INEXISTANT\")",
+      "Bash(ls -la \"/mnt/c/Users/AntoineFonfreydelLib/\" 2>/dev/null | head -20)",
+      "PowerShell($src = \"C:\\\\Users\\\\AntoineFonfreydelLib\\\\OneDrive - LITG\\\\Documents\\\\Projets\\\\formation_BeApi\\\\gemforge-beapi\"; $dst = \"C:\\\\Users\\\\AntoineFonfreydelLib\\\\OneDrive - LITG\\\\Documents\\\\Projets\\\\formation_BeApi\\\\GemAPI\"; Get-ChildItem -Path $src -Force | ForEach-Object { Move-Item -Path $_.FullName -Destination $dst -Force }; Remove-Item -Path $src -Force -ErrorAction SilentlyContinue; Write-Host \"Déplacement terminé\")",
+      "PowerShell($base = \"C:\\\\Users\\\\AntoineFonfreydelLib\\\\OneDrive - LITG\\\\Documents\\\\Projets\\\\formation_BeApi\\\\GemAPI\"; New-Item -ItemType Directory -Force \"$base\\\\app\\\\api\\\\generate\" | Out-Null; New-Item -ItemType Directory -Force \"$base\\\\app\\\\api\\\\send-email\" | Out-Null; New-Item -ItemType Directory -Force \"$base\\\\app\\\\wall\" | Out-Null; New-Item -ItemType Directory -Force \"$base\\\\components\" | Out-Null; Write-Host \"Dossiers créés\")"
     ]
   }
 }

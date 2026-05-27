@@ -3,6 +3,23 @@ interface MessageBubbleProps {
   content: string
 }
 
+function renderContent(text: string) {
+  // Nettoyage défensif des résidus markdown les plus courants
+  const cleaned = text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/^[-•]\s+/gm, '')
+    .replace(/^#+\s+/gm, '')
+
+  // Rendu des sauts de ligne comme vrais sauts de ligne
+  return cleaned.split('\n').map((line, i, arr) => (
+    <span key={i}>
+      {line}
+      {i < arr.length - 1 && <br />}
+    </span>
+  ))
+}
+
 export default function MessageBubble({ role, content }: MessageBubbleProps) {
   const isAssistant = role === 'assistant'
 
@@ -30,7 +47,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
             lineHeight: '1.5',
             color: '#1A1A1A',
           }}>
-            {content}
+            {renderContent(content)}
           </div>
         </div>
       </div>
@@ -49,7 +66,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
         lineHeight: '1.5',
         color: '#FFFFFF',
       }}>
-        {content}
+        {renderContent(content)}
       </div>
     </div>
   )

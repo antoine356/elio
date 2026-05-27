@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const PHRASES: { text: string; pauseAfter: number }[] = [
-  { text: 'Bonjour Marie-Pierre.',                                                                       pauseAfter: 600  },
-  { text: 'Je suis Elio, ton assistant personnel.',                                                      pauseAfter: 400  },
-  { text: "Capable de répondre à tes questions, te suggérer des idées, t'accompagner au quotidien.",     pauseAfter: 500  },
-  { text: 'Antoine a pensé à toi en me créant.',                                                         pauseAfter: 2000 },
+  { text: 'Bonjour Marie-Pierre.',                                                                     pauseAfter: 600  },
+  { text: 'Je suis Elio, ton assistant personnel.',                                                    pauseAfter: 400  },
+  { text: "Capable de répondre à tes questions, te suggérer des idées, t'accompagner au quotidien.",   pauseAfter: 500  },
+  { text: 'Antoine a pensé à toi en me créant.',                                                       pauseAfter: 3200 },
 ]
 
 const CHAR_SPEED = 35
@@ -30,10 +30,7 @@ export default function OnboardingPage() {
       for (let i = 0; i < PHRASES.length; i++) {
         const { text, pauseAfter } = PHRASES[i]
 
-        // Ajoute une ligne vide pour cette phrase
         setLines(prev => [...prev, ''])
-
-        // Attendre que React ait validé l'ajout avant de commencer à la remplir
         await delay(CHAR_SPEED)
 
         for (let j = 1; j <= text.length; j++) {
@@ -48,9 +45,8 @@ export default function OnboardingPage() {
         await delay(pauseAfter)
       }
 
-      // Fondu sortant
       setFading(true)
-      await delay(800)
+      await delay(1000)
 
       localStorage.setItem('elio_onboarded', 'true')
       router.replace('/')
@@ -69,7 +65,7 @@ export default function OnboardingPage() {
         alignItems: 'center',
         justifyContent: 'center',
         opacity: fading ? 0 : 1,
-        transition: 'opacity 800ms ease',
+        transition: 'opacity 1000ms ease',
         zIndex: 50,
       }}
     >
